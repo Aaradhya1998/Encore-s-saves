@@ -1,6 +1,6 @@
 """
 EnCore's SnapSave - Media Downloader Engine
-Supports YouTube, YouTube Shorts, Instagram, Reels, TikTok, X (Twitter), Facebook, etc.
+Supports YouTube, YouTube Shorts, Instagram, Reels, X (Twitter), Facebook, etc.
 Hybrid architecture: pytubefix for YouTube streams + yt-dlp fallback and multi-platform engine.
 """
 
@@ -84,8 +84,6 @@ def detect_platform(url: str) -> str:
         if "/reel" in path:
             return "Instagram Reels"
         return "Instagram"
-    if "tiktok.com" in domain:
-        return "TikTok"
     if "twitter.com" in domain or "x.com" in domain:
         return "X (Twitter)"
     if "facebook.com" in domain or "fb.watch" in domain:
@@ -206,7 +204,7 @@ def extract_with_pytubefix(url: str) -> Dict[str, Any]:
 
 
 def extract_with_ytdlp(url: str) -> Dict[str, Any]:
-    """Extract information using yt-dlp (supports Instagram, TikTok, X, FB, YouTube fallback)."""
+    """Extract information using yt-dlp (supports Instagram, X, FB, YouTube fallback)."""
     import yt_dlp
 
     ydl_opts = {
@@ -248,7 +246,7 @@ def extract_with_ytdlp(url: str) -> Dict[str, Any]:
     seen_heights = set()
 
     raw_formats = info.get("formats", [])
-    # If no formats array (e.g. direct Instagram/TikTok video), use direct url
+    # If no formats array (e.g. direct Instagram video), use direct url
     if not raw_formats and info.get("url"):
         ext = info.get("ext", "mp4")
         formats_list.append({

@@ -395,33 +395,6 @@ h4 {
   border-color: var(--color-black);
 }
 
-/* Demo quick links */
-.quick-samples {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.sample-link-btn {
-  background: none;
-  border: none;
-  color: var(--text-primary);
-  font-family: inherit;
-  font-size: 0.75rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-  padding: 0.15rem 0.25rem;
-}
-
-.sample-link-btn:hover {
-  color: var(--color-black);
-  font-weight: 600;
-}
-
 /* Video Preview Card */
 .preview-container {
   border: 1px solid var(--border-dark);
@@ -674,67 +647,6 @@ h4 {
 
 .toast.toast-success {
   background: var(--color-success);
-}
-
-/* Login Page Layout (Matches DoYour To-Do) */
-.login-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 2.5rem 1.5rem;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.login-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  border-bottom: 2px solid var(--color-black);
-  padding-bottom: 1.5rem;
-}
-
-.login-logo {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-  border-radius: var(--radius-sm);
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.login-title {
-  font-size: 2.25rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  color: var(--color-black);
-}
-
-.login-subtitle {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.login-footer-info {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-  border-top: 1px solid var(--border-color);
-  padding-top: 1.25rem;
 }
 
 .spin {

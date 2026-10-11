@@ -16,7 +16,6 @@
   const errorBanner = document.getElementById("error-banner");
   const errorMessageText = document.getElementById("error-message-text");
   const platformBadges = document.querySelectorAll(".platform-badge");
-  const sampleButtons = document.querySelectorAll(".sample-link-btn");
 
   // Preview elements
   const previewSection = document.getElementById("preview-section");
@@ -42,7 +41,6 @@
   // Header & Status elements
   const statusDot = document.getElementById("status-dot");
   const statusText = document.getElementById("status-text");
-  const authLink = document.getElementById("auth-link");
   const toastContainer = document.getElementById("toast-container");
 
   // Application State
@@ -80,17 +78,6 @@
   }
 
   /**
-   * Check Auth / User State
-   */
-  async function checkUserSession() {
-    const userEmail = localStorage.getItem("snapsave_user") || localStorage.getItem("snapsave_guest_user");
-    if (userEmail) {
-      authLink.textContent = userEmail.split("@")[0];
-      authLink.title = `Signed in as ${userEmail}`;
-    }
-  }
-
-  /**
    * Detect and highlight platform badge based on input text
    */
   function updatePlatformBadges(url) {
@@ -105,8 +92,6 @@
       highlightBadge("reels");
     } else if (val.includes("instagram.com")) {
       highlightBadge("instagram");
-    } else if (val.includes("tiktok.com")) {
-      highlightBadge("tiktok");
     } else if (val.includes("twitter.com") || val.includes("x.com")) {
       highlightBadge("x");
     } else if (val.includes("facebook.com") || val.includes("fb.watch")) {
@@ -150,15 +135,6 @@
     urlInput.dispatchEvent(new Event("input"));
     previewSection.style.display = "none";
     urlInput.focus();
-  });
-
-  sampleButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const sampleUrl = btn.getAttribute("data-url");
-      urlInput.value = sampleUrl;
-      urlInput.dispatchEvent(new Event("input"));
-      fetchForm.dispatchEvent(new Event("submit"));
-    });
   });
 
   closePreviewBtn.addEventListener("click", () => {
@@ -384,5 +360,4 @@
 
   // Initialization
   verifyBackendStatus();
-  checkUserSession();
 })();
