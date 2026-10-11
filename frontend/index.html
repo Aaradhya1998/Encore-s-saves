@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="EnCore's SnapSave — Universal high-speed video and audio downloader for YouTube, Shorts, Instagram, Reels, TikTok and more." />
+  <title>EnCore's SnapSave — Media Video Downloader</title>
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo/logo.png" />
+  <link rel="apple-touch-icon" href="logo/logo.png" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="brand-area">
+        <div class="brand-brandmark">
+          <img src="logo/logo.png" alt="EnCore's SnapSave Logo" class="app-logo" />
+          <div class="brand-text">
+            <div class="micro-label">Media Downloader</div>
+            <h1 class="brand-title">EnCore's</h1>
+            <h3 class="brand-subtitle">SnapSave</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Backend Status Pill -->
+        <div id="backend-status" class="user-identity" title="FastAPI Backend Status">
+          <span class="user-identity-dot" id="status-dot" style="background-color: var(--color-black);"></span>
+          <span id="status-text">Checking Server...</span>
+        </div>
+
+        <!-- User / Auth Link -->
+        <a href="login.html" id="auth-link" class="btn btn-secondary" style="font-size: 0.6875rem; padding: 0.4rem 0.75rem; min-height: 34px;">
+          Account Access
+        </a>
+      </div>
+    </header>
+
+    <!-- Main URL Fetch Card -->
+    <main class="editorial-card" id="url-card">
+      <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+        <div class="micro-label">Universal Link Input</div>
+        <h2 style="font-size: 1.35rem; font-weight: 700;">Download Video, Shorts &amp; Audio</h2>
+        <p style="font-size: 0.8125rem; color: var(--text-secondary);">
+          Paste any public link from YouTube, Instagram Reels, TikTok, X (Twitter) or Facebook to preview qualities.
+        </p>
+      </div>
+
+      <!-- URL Input Group -->
+      <form id="fetch-form" novalidate>
+        <div class="form-group" style="margin-bottom: 0.75rem;">
+          <label for="url-input" class="form-label">Video or Media URL</label>
+          <div class="input-with-actions">
+            <input
+              type="url"
+              id="url-input"
+              name="url"
+              class="form-input"
+              placeholder="https://www.youtube.com/watch?v=... or Instagram / Reels"
+              autocomplete="off"
+              spellcheck="false"
+              required
+            />
+            <div class="input-actions-inner">
+              <button type="button" id="paste-btn" class="btn-inline" title="Paste from clipboard">
+                Paste
+              </button>
+              <button type="button" id="clear-btn" class="btn-inline" title="Clear input" style="display: none;">
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supported Platform Chips -->
+        <div class="platform-tags-wrapper" id="platform-tags">
+          <span class="platform-badge" data-platform="youtube">YouTube</span>
+          <span class="platform-badge" data-platform="shorts">Shorts</span>
+          <span class="platform-badge" data-platform="instagram">Instagram</span>
+          <span class="platform-badge" data-platform="reels">Reels</span>
+          <span class="platform-badge" data-platform="tiktok">TikTok</span>
+          <span class="platform-badge" data-platform="x">X / Twitter</span>
+          <span class="platform-badge" data-platform="facebook">Facebook</span>
+        </div>
+
+        <!-- Quick Demo Links for Fast Testing -->
+        <div class="quick-samples" style="margin-top: 0.75rem;">
+          <span>Try sample:</span>
+          <button type="button" class="sample-link-btn" data-url="https://www.youtube.com/watch?v=jNQXAC9IVRw">
+            YouTube Classic (Me at the zoo)
+          </button>
+        </div>
+
+        <!-- Fetch Button -->
+        <div style="margin-top: 1.25rem;">
+          <button type="submit" id="fetch-btn" class="btn btn-primary" style="width: 100%;">
+            <span id="fetch-btn-text">Fetch Video &amp; Formats</span>
+            <svg id="fetch-spinner" class="spin" style="display: none;" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="2" x2="12" y2="6"></line>
+              <line x1="12" y1="18" x2="12" y2="22"></line>
+              <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+              <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+              <line x1="2" y1="12" x2="6" y2="12"></line>
+              <line x1="18" y1="12" x2="22" y2="12"></line>
+              <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+              <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <!-- Inline Error Banner -->
+      <div id="error-banner" class="alert-banner alert-banner-error" style="display: none;" role="alert">
+        <div class="micro-label" style="color: var(--color-danger);">Extraction Error</div>
+        <div id="error-message-text">Could not retrieve video details.</div>
+      </div>
+    </main>
+
+    <!-- Video Preview & Format Selection Card (Appears after fetch) -->
+    <section class="preview-container" id="preview-section" style="display: none;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+        <div class="micro-label" id="preview-platform-tag">YouTube • Preview</div>
+        <button type="button" id="close-preview-btn" class="btn-ghost" style="font-size: 0.6875rem;">
+          Close &times;
+        </button>
+      </div>
+
+      <!-- Media Meta Grid -->
+      <div class="preview-media-grid">
+        <div class="preview-thumb-box">
+          <img id="preview-thumbnail-img" src="" alt="Video thumbnail preview" class="preview-thumbnail" />
+          <span class="preview-duration-tag" id="preview-duration">00:00</span>
+        </div>
+
+        <div class="preview-meta">
+          <h2 class="preview-title" id="preview-title">Video Title</h2>
+          <div class="preview-author">
+            <span class="micro-label">Creator:</span>
+            <span id="preview-uploader" style="font-weight: 600; color: var(--text-primary);">Channel Name</span>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Engine: <span id="preview-engine" style="font-family: monospace;">pytubefix</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Format Filter Tabs & Quality Grid -->
+      <div class="format-selection-group">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div class="micro-label">Choose Download Format &amp; Quality</div>
+          <!-- Filter Buttons -->
+          <div style="display: flex; gap: 0.35rem;" id="format-filter-tabs">
+            <button type="button" class="btn-inline active" data-filter="all">All</button>
+            <button type="button" class="btn-inline" data-filter="video">Video</button>
+            <button type="button" class="btn-inline" data-filter="audio">Audio</button>
+          </div>
+        </div>
+
+        <!-- Quality Cards Grid -->
+        <div class="format-options-grid" id="format-grid">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Download Action -->
+        <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button type="button" id="download-btn" class="btn btn-primary" style="width: 100%; min-height: 48px;">
+            <span id="download-btn-text">Download Selected Media</span>
+            <svg id="download-spinner" class="spin" style="display: none;" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="2" x2="12" y2="6"></line>
+              <line x1="12" y1="18" x2="12" y2="22"></line>
+              <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+              <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+              <line x1="2" y1="12" x2="6" y2="12"></line>
+              <line x1="18" y1="12" x2="22" y2="12"></line>
+              <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+              <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Download Progress Container -->
+        <div id="download-progress-box" class="progress-box" style="display: none;">
+          <div class="progress-header">
+            <span id="progress-status-label">Preparing download stream...</span>
+            <span id="progress-percent-label">Processing</span>
+          </div>
+          <div class="progress-bar-track">
+            <div id="progress-bar-fill" class="progress-bar-fill progress-bar-indeterminate"></div>
+          </div>
+          <div style="font-size: 0.6875rem; color: var(--text-muted);">
+            Streams are processed on the server and downloaded directly to your device. Temporary storage is auto-purged.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guide / Feature Information Box -->
+    <section class="editorial-card" style="background: var(--bg-subtle);">
+      <div class="micro-label">Features &amp; Reliability</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.8125rem;">
+        <div>
+          <strong style="display: block; margin-bottom: 0.2rem; color: var(--color-black);">YouTube &amp; Shorts</strong>
+          Powered by pytubefix engine with adaptive and progressive stream support.
+        </div>
+        <div>
+          <strong style="display: block; margin-bottom: 0.2rem; color: var(--color-black);">Instagram &amp; Reels</strong>
+          Full HD video stream extraction with instant audio synchronization.
+        </div>
+        <div>
+          <strong style="display: block; margin-bottom: 0.2rem; color: var(--color-black);">Auto-Cleaned &amp; Private</strong>
+          Temporary downloads are strictly auto-deleted after 10 minutes.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div>&copy; 2026 – Made by Aaradhya For {EnCore's 20 Projects 2026}</div>
+    <div style="margin-top: 0.25rem; font-size: 0.6875rem; color: var(--text-faint);">
+      For personal use only. Respect copyright and each platform's terms of service.
+    </div>
+  </footer>
+
+  <!-- Toast Notification Box -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>

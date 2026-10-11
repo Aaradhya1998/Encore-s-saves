@@ -1,0 +1,8 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+pytubefix>=6.16.0
+yt-dlp>=2024.8.6
+imageio-ffmpeg>=0.5.1
+pydantic>=2.6.0
+python-multipart>=0.0.9
+requests>=2.31.0
