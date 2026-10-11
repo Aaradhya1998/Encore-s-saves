@@ -1,15 +1,9 @@
-/**
- * EnCore's SnapSave - Frontend API Client
- * Manages all communication with FastAPI backend endpoints.
- */
+
 
 const SnapSaveAPI = (function () {
-  // Relative paths ensure requests resolve correctly both locally and on cloud deployments (e.g., Render)
+
   const BASE_URL = "";
 
-  /**
-   * Health Check
-   */
   async function checkHealth() {
     try {
       const response = await fetch("/api/health", { method: "GET" });
