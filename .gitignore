@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Temporary media downloads
+backend/downloads/
+downloads/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -173,7 +173,19 @@
       renderPreview(data);
       showToast("Media details retrieved!", "success");
     } catch (err) {
-      showError(err.message || "Failed to retrieve media information.");
+      const isInstagram = url.toLowerCase().includes("instagram.com");
+      const errLower = (err.message || "").toLowerCase();
+      if (
+        isInstagram &&
+        (errLower.includes("private") ||
+          errLower.includes("login") ||
+          errLower.includes("log in") ||
+          errLower.includes("sign in"))
+      ) {
+        showError("This post is private or needs login. Only public Instagram links are supported.");
+      } else {
+        showError(err.message || "Failed to retrieve media information.");
+      }
     } finally {
       fetchBtn.disabled = false;
       fetchBtnText.textContent = "Fetch Video & Formats";
@@ -348,9 +360,19 @@
         progressBarFill.style.width = "0%";
       }, 7000);
     } catch (err) {
+      const isInstagram = url.toLowerCase().includes("instagram.com");
+      const errLower = (err.message || "").toLowerCase();
+      const displayMsg =
+        isInstagram &&
+        (errLower.includes("private") ||
+          errLower.includes("login") ||
+          errLower.includes("log in") ||
+          errLower.includes("sign in"))
+          ? "This post is private or needs login. Only public Instagram links are supported."
+          : (err.message || "Download could not be completed.");
       progressStatusLabel.textContent = "Download failed";
       progressPercentLabel.textContent = "Error";
-      showToast(err.message || "Download could not be completed.", "error");
+      showToast(displayMsg, "error");
     } finally {
       downloadBtn.disabled = false;
       downloadSpinner.style.display = "none";

@@ -4,20 +4,15 @@
  */
 
 const SnapSaveAPI = (function () {
-  // Determine backend base URL:
-  // If frontend is opened via backend server, use relative path.
-  // If opened via file:// or another port (e.g. 5500, 3000), default to http://localhost:8000
-  const isDirectBackend = window.location.port === "8000" || window.location.hostname === "localhost" && window.location.pathname.startsWith("/api");
-  const BASE_URL = (window.location.protocol === "http:" || window.location.protocol === "https:") && window.location.port === "8000"
-    ? ""
-    : "http://localhost:8000";
+  // Relative paths ensure requests resolve correctly both locally and on cloud deployments (e.g., Render)
+  const BASE_URL = "";
 
   /**
    * Health Check
    */
   async function checkHealth() {
     try {
-      const response = await fetch(`${BASE_URL}/api/health`, { method: "GET" });
+      const response = await fetch("/api/health", { method: "GET" });
       if (!response.ok) throw new Error("Backend server unhealthy");
       return await response.json();
     } catch (err) {
@@ -32,7 +27,7 @@ const SnapSaveAPI = (function () {
    */
   async function fetchInfo(url) {
     try {
-      const response = await fetch(`${BASE_URL}/api/info`, {
+      const response = await fetch("/api/info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: url.trim() })
@@ -60,7 +55,7 @@ const SnapSaveAPI = (function () {
     if (onStatusUpdate) onStatusUpdate("Contacting downloader server...");
 
     try {
-      const response = await fetch(`${BASE_URL}/api/download`, {
+      const response = await fetch("/api/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

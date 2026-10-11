@@ -1,7 +1,7 @@
 # EnCore's SnapSave
 
 > Universal high-speed media video & audio downloader web application.  
-> Supports **YouTube**, **YouTube Shorts**, **Instagram**, **Instagram Reels**, **TikTok**, **X (Twitter)**, **Facebook**, and more.  
+> Supports **YouTube**, **YouTube Shorts**, **Instagram**, **Instagram Reels**, **X (Twitter)**, **Facebook**, and more.  
 > Designed with the minimalist editorial design system matching **DoYour To-Do** for **EnCore's 20 Projects 2026**.
 
 ---
@@ -10,8 +10,10 @@
 
 - **Hybrid Extraction Engine**:
   - Primary for YouTube & Shorts: `pytubefix` (handles progressive MP4, adaptive high-res video, and pure audio streams).
-  - Multi-platform & fallback: `yt-dlp` (Instagram, Reels, TikTok, X/Twitter, Facebook, etc.).
-- **Automatic Platform Detection**: Detects links from YouTube, Shorts, Instagram, Reels, TikTok, X, and Facebook.
+  - Multi-platform & fallback: `yt-dlp` (Instagram, Reels, X/Twitter, Facebook, etc.).
+- **Automatic Platform Detection**: Detects links from YouTube, Shorts, Instagram, Reels, X, and Facebook.
+- **Instagram & Reels Support**: Full support for public Instagram posts and Reels. For private or login-only posts, clearly displays: *"This post is private or needs login. Only public Instagram links are supported."*
+- **Direct Access (No Account Required)**: Clean standalone client interface where `index.html` is the only page. No accounts or external authentication services needed.
 - **Rich Media Preview**: Shows high-resolution thumbnail, duration badge, title, uploader/channel name, and extraction engine.
 - **Quality & Format Selection**:
   - Video: 1080p Full HD, 720p HD, 480p, 360p (with file size estimation).
@@ -19,7 +21,6 @@
 - **Fast In-Browser Downloads**: Directly streams binary attachments to browser with automatic filename formatting.
 - **Safe Auto-Cleanup**: Temporary media files in `backend/downloads/` are auto-purged immediately upon download delivery and garbage-collected if older than 10 minutes.
 - **Built-in Rate Limiting**: In-memory sliding window rate limiter protects server from overload.
-- **Passwordless Supabase Auth**: Optional passwordless magic link sign-in matching DoYour To-Do, with instant guest bypass for development.
 
 ---
 
@@ -31,15 +32,13 @@ Encore's saves/
 │   ├── app.py              # FastAPI server (CORS, streaming, rate limits)
 │   ├── downloader.py       # pytubefix + yt-dlp download engine
 │   ├── requirements.txt    # Python dependencies
-│   ├── README.md           # Backend setup guide
+│   ├── README.md           # Backend documentation & setup guide
 │   └── downloads/          # Temporary files (auto-cleaned)
 ├── frontend/
-│   ├── index.html          # Main video downloader interface
-│   ├── login.html          # Passwordless sign-in page (DoYour To-Do style)
+│   ├── index.html          # Main video downloader interface (single page)
 │   ├── css/style.css       # Monochrome editorial design system
 │   ├── js/script.js        # Main UI controller & stream selector
 │   ├── js/api.js           # Fetch API client (health, info, download)
-│   ├── js/supabase-client.js # Auth client with fallback
 │   └── logo/
 │       ├── logo.png        # App logo
 │       └── logo.svg        # Scalable vector logo
@@ -61,9 +60,11 @@ cd backend
 python -m venv venv
 
 # Activate virtual environment
-# Windows:
+# Windows (PowerShell):
 .\venv\Scripts\Activate.ps1
-# macOS/Linux:
+# Windows (CMD):
+.\venv\Scripts\activate.bat
+# Linux/macOS:
 source venv/bin/activate
 
 # Install dependencies
@@ -79,10 +80,9 @@ The backend server starts on: **`http://localhost:8000`**
 
 ### 2. Frontend Access
 
-The FastAPI backend automatically mounts the `frontend/` directory. You can open:
+The FastAPI backend automatically mounts the `frontend/` directory (`index.html` is the only page). You can open:
 
 - **Main Downloader**: [http://localhost:8000/](http://localhost:8000/) or [http://localhost:8000/index.html](http://localhost:8000/index.html)
-- **Login Page**: [http://localhost:8000/login.html](http://localhost:8000/login.html)
 - **API Health**: [http://localhost:8000/api/health](http://localhost:8000/api/health)
 - **API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
 

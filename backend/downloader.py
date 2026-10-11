@@ -18,18 +18,34 @@ from urllib.parse import urlparse
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("snapsave_downloader")
 
-# Base downloads directory
+# Base downloads directory - auto-created if missing
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DOWNLOADS_DIR = os.path.join(CURRENT_DIR, "downloads")
 os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 
-# Locate ffmpeg executable if available
-FFMPEG_PATH = None
-try:
-    import imageio_ffmpeg
-    FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
-except Exception:
-    pass
+
+def resolve_ffmpeg_path() -> Optional[str]:
+    """
+    Resolve ffmpeg executable cross-platform (Render/Linux, macOS, Windows)
+    primarily through imageio_ffmpeg, with fallback to system PATH.
+    """
+    try:
+        import imageio_ffmpeg
+        ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
+        if ffmpeg_bin and os.path.exists(ffmpeg_bin):
+            return ffmpeg_bin
+    except Exception as exc:
+        logger.warning(f"imageio_ffmpeg lookup failed: {exc}")
+
+    import shutil
+    system_bin = shutil.which("ffmpeg")
+    if system_bin:
+        return system_bin
+
+    return None
+
+
+FFMPEG_PATH = resolve_ffmpeg_path()
 
 
 class MediaExtractError(Exception):
@@ -222,16 +238,45 @@ def extract_with_ytdlp(url: str) -> Dict[str, Any]:
             info = ydl.extract_info(url, download=False)
     except yt_dlp.utils.DownloadError as e:
         msg = str(e)
+        is_instagram = "instagram.com" in url.lower()
+        if is_instagram and any(term in msg.lower() for term in [
+            "private", "login", "log in", "sign in", "checkpoint", "cookie", "authentication"
+        ]):
+            raise MediaExtractError(
+                "This post is private or needs login. Only public Instagram links are supported.",
+                status_code=403
+            )
         if "Private video" in msg:
+            if is_instagram:
+                raise MediaExtractError(
+                    "This post is private or needs login. Only public Instagram links are supported.",
+                    status_code=403
+                )
             raise MediaExtractError("This video is private or inaccessible.", status_code=403)
-        if "Sign in" in msg or "Age-restricted" in msg:
-            raise MediaExtractError("This video is age-restricted or requires login.", status_code=403)
+        if "Sign in" in msg or "Age-restricted" in msg or "login" in msg.lower():
+            if is_instagram:
+                raise MediaExtractError(
+                    "This post is private or needs login. Only public Instagram links are supported.",
+                    status_code=403
+                )
+            raise MediaExtractError("This video is age-restricted or requires authentication.", status_code=403)
         if "This video is not available" in msg:
             raise MediaExtractError("Video is unavailable or has been removed.", status_code=404)
         if "Unsupported URL" in msg:
             raise MediaExtractError("Unsupported URL or invalid link format.", status_code=400)
+        if is_instagram:
+            raise MediaExtractError(
+                "This post is private or needs login. Only public Instagram links are supported.",
+                status_code=403
+            )
         raise MediaExtractError(f"Could not retrieve media details: {msg[:160]}", status_code=400)
     except Exception as e:
+        is_instagram = "instagram.com" in url.lower()
+        if is_instagram:
+            raise MediaExtractError(
+                "This post is private or needs login. Only public Instagram links are supported.",
+                status_code=403
+            )
         raise MediaExtractError(f"Failed to extract media information: {str(e)[:160]}", status_code=500)
 
     if not info:
@@ -466,6 +511,15 @@ def download_with_ytdlp(url: str, format_id: str, ext: str) -> Tuple[str, str, s
             return file_path, display_name, content_type
     except Exception as e:
         logger.error(f"yt-dlp download failed: {e}")
+        is_instagram = "instagram.com" in url.lower()
+        msg = str(e)
+        if is_instagram and any(term in msg.lower() for term in [
+            "private", "login", "log in", "sign in", "checkpoint", "cookie", "authentication"
+        ]):
+            raise MediaExtractError(
+                "This post is private or needs login. Only public Instagram links are supported.",
+                status_code=403
+            )
         raise MediaExtractError(f"Download failed: {str(e)[:160]}")
 
 

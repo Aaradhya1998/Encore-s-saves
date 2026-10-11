@@ -22,6 +22,8 @@ from downloader import (
 )
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Ensure downloads directory exists on startup
+os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 
 # App instance
 app = FastAPI(
